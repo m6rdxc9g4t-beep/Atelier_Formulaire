@@ -1,0 +1,23 @@
+# Dépendances
+node_modules/
+
+# Builds
+dist/
+*.tsbuildinfo
+
+# Environnement local
+.env
+.env.*
+!.env.example
+
+# Données locales (base SQLite, pièces jointes)
+backend/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Divers
+.DS_Store
+*.log
+coverage/

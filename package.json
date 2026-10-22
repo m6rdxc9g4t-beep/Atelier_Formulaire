@@ -1,0 +1,26 @@
+{
+  "name": "atelier-formulaire",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Formulaires de la Suite Atelier : questionnaires, collecte des réponses, synthèse et export vers les autres apps.",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "engines": {
+    "node": "^22.12.0 || >=24.0.0",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names api,web --prefix-colors auto \"npm run dev --workspace=@atelier-formulaire/backend\" \"npm run dev --workspace=@atelier-formulaire/frontend\"",
+    "build": "npm run build --workspace=@atelier-formulaire/backend && npm run build --workspace=@atelier-formulaire/frontend",
+    "start": "npm start --workspace=@atelier-formulaire/backend",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "check": "npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}
