@@ -3,10 +3,11 @@
 import { ArrowLeft, Eye, Lock, Play, RotateCcw } from 'lucide-react'
 import { useEffect } from 'react'
 
+import { FormActionsMenu } from '../components/FormActions.tsx'
 import { ErrorNotice, Skeleton, useUi } from '../components/ui.tsx'
 import { api, ApiError, type Form, type FormStatus } from '../lib/api.ts'
 import { invalidate, useAsync, useTopic } from '../lib/data.ts'
-import { onLinkClick, type FormTab } from '../lib/router.ts'
+import { navigate, onLinkClick, type FormTab } from '../lib/router.ts'
 import { useFormEditor, type SaveState } from '../lib/useFormEditor.ts'
 import { Builder } from './Builder.tsx'
 import { ResponsesTab } from './ResponsesTab.tsx'
@@ -93,6 +94,12 @@ function FormEditorPage({ initial, tab }: { initial: Form; tab: FormTab }) {
               {form.status === 'draft' ? <Play aria-hidden /> : <RotateCcw aria-hidden />} {form.status === 'draft' ? 'Ouvrir aux réponses' : 'Rouvrir'}
             </button>
           )}
+          <FormActionsMenu
+            form={{ ...form, title: draft.title || form.title }}
+            context="page"
+            beforeDelete={editor.save}
+            onDeleted={() => navigate('/', { replace: true })}
+          />
         </div>
 
         {(state === 'conflict' || state === 'error') && (

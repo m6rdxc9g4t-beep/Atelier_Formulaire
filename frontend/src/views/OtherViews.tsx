@@ -4,6 +4,7 @@ import { ArrowLeft, ClipboardList, Plus, RotateCcw, Trash2 } from 'lucide-react'
 import { useEffect } from 'react'
 
 import { FillForm } from '../components/FillForm.tsx'
+import { FormActionsMenu } from '../components/FormActions.tsx'
 import { ErrorNotice, Skeleton, useUi } from '../components/ui.tsx'
 import { api, ApiError } from '../lib/api.ts'
 import { invalidate, useAsync, useTopic } from '../lib/data.ts'
@@ -70,7 +71,7 @@ export function HomeView() {
       ) : (
         <ul className="form-rows">
           {list.map((f) => (
-            <li key={f.id}>
+            <li key={f.id} className="form-rows__item">
               <a className="form-row-link" href={`/f/${f.id}`} onClick={(e) => onLinkClick(e, `/f/${f.id}`)}>
                 <span style={{ minWidth: 0 }}>
                   <span className="form-row-link__title" style={{ display: 'block' }}>
@@ -90,6 +91,7 @@ export function HomeView() {
                   {f.lastResponseAt ? `reçue ${timeAgo(f.lastResponseAt)}` : `modifié ${timeAgo(f.updatedAt)}`}
                 </span>
               </a>
+              <FormActionsMenu form={f} context="list" />
             </li>
           ))}
         </ul>

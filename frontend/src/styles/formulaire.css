@@ -40,6 +40,15 @@
 .form-rows > li {
   border-bottom: 1px solid var(--app-line);
 }
+.form-rows__item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.form-rows__item > .form-row-link {
+  flex: 1;
+  min-width: 0;
+}
 .form-row-link {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto 7rem 9rem;
@@ -120,7 +129,7 @@
   margin-bottom: 0.4rem;
 }
 .form-head__title {
-  flex: 1 1 280px;
+  flex: 1 1 200px;
   min-width: 0;
   margin: 0;
   font-size: 1.35rem;
@@ -862,6 +871,25 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
+}
+
+/* ── Menu « … » d'un formulaire ─────────────────────────────────────────── */
+.row-menu {
+  position: relative;
+  flex: none;
+}
+/* Dans l'en-tête, s'il passe à la ligne, le menu reste à droite (et son panneau dans l'écran). */
+.form-head .row-menu {
+  margin-left: auto;
+}
+.row-menu__popover {
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 220px;
+}
+.menu-item--danger,
+.menu-item--danger svg {
+  color: var(--danger);
 }
 
 /* ── Écrans étroits ──────────────────────────────────────────────────────── */
