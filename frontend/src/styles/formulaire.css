@@ -30,6 +30,11 @@
   margin: 0.4rem 0 0;
   color: var(--app-muted);
 }
+.list-head__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 
 .form-rows {
   list-style: none;
@@ -892,6 +897,199 @@
   color: var(--danger);
 }
 
+/* ── Créer avec l'IA ─────────────────────────────────────────────────────── */
+dialog.ai-dialog {
+  width: min(680px, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+}
+dialog.ai-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.ai-dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 1rem 1rem 0 1.4rem;
+}
+.ai-dialog__title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+}
+.ai-dialog__title svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-ink);
+}
+.ai-dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+  padding-top: 0.8rem;
+}
+.ai-dialog__hint {
+  margin: 0.35rem 0 0;
+  font-size: 12.5px;
+  color: var(--app-muted);
+}
+.ai-dialog__count {
+  width: 8rem;
+}
+.ai-dialog__actions {
+  flex-wrap: wrap;
+  border-top: 1px solid var(--app-line);
+}
+
+.ai-progress {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--app-border-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--ds-radius-md);
+  background: var(--accent-faint);
+}
+.ai-progress svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  color: var(--accent-ink);
+}
+.ai-progress strong {
+  display: block;
+  font-weight: 600;
+}
+.ai-progress__time {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 12.5px;
+  color: var(--app-muted);
+  font-variant-numeric: tabular-nums;
+}
+.spin {
+  animation: spin 1.1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}
+
+.ai-preview__eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.ai-preview__model {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.ai-preview__title {
+  margin: 0.3rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.ai-preview__desc {
+  margin: 0.3rem 0 0;
+  color: var(--app-muted);
+  white-space: pre-line;
+}
+.ai-preview__warnings {
+  margin-top: 0.8rem;
+}
+.ai-preview__warnings ul {
+  margin: 0.3rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 13.5px;
+}
+.ai-preview__list {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.ai-preview__q {
+  display: flex;
+  gap: 0.7rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--app-border-soft);
+  border-radius: var(--ds-radius-md);
+  background: var(--app-surface-2);
+}
+.ai-preview__num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.ai-preview__body {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.ai-preview__label {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.ai-preview__meta,
+.ai-preview__help {
+  font-size: 12.5px;
+  color: var(--app-muted);
+}
+.ai-preview__help {
+  font-style: italic;
+}
+.ai-preview__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ai-preview__options li {
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--app-border-soft);
+  border-radius: var(--ds-radius-pill);
+  font-size: 12.5px;
+  overflow-wrap: anywhere;
+}
+.ai-preview__section {
+  margin-top: 0.4rem;
+  padding: 0.2rem 0 0.1rem;
+  border-bottom: 1px solid var(--app-line);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--app-muted);
+}
+
 /* ── Écrans étroits ──────────────────────────────────────────────────────── */
 @media (max-width: 760px) {
   .form-row-link {
@@ -927,6 +1125,10 @@
   }
   .card {
     padding: 1rem;
+  }
+  .ai-dialog__actions .btn {
+    flex: 1 1 auto;
+    justify-content: center;
   }
 }
 
