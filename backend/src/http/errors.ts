@@ -14,6 +14,11 @@ export type ErrorCode =
   | 'CLOSED'
   | 'RATE_LIMITED'
   | 'ALREADY_ANSWERED'
+  | 'AI_UNAVAILABLE'
+  | 'AI_TIMEOUT'
+  | 'AI_MODEL_MISSING'
+  | 'AI_INVALID_OUTPUT'
+  | 'AI_CANCELLED'
   | 'INTERNAL'
 
 export class ApiError extends Error {

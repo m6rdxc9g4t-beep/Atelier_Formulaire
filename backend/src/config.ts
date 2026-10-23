@@ -24,7 +24,18 @@ export interface FormsConfig {
   publicUrl: string | null
   /** Réponses publiques acceptées par adresse IP et par période de 10 minutes. */
   publicRateLimit: number
+  /** Création assistée de formulaires : serveur Ollama (même hôte par défaut), modèle et délai d'une génération. */
+  ollama: OllamaConfig
   logLevel: string
+}
+
+export interface OllamaConfig {
+  /** Adresse du serveur Ollama, sans « / » final (`OLLAMA_URL`). */
+  url: string
+  /** Modèle utilisé (`OLLAMA_MODEL`). */
+  model: string
+  /** Délai maximal d'une génération, en millisecondes (`OLLAMA_TIMEOUT_MS`) : sans GPU, plusieurs minutes. */
+  timeoutMs: number
 }
 
 function list(value: string | undefined): string[] {
@@ -54,6 +65,11 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): FormsConfig {
     defaultUser: (env.FORMULAIRE_DEFAULT_USER || 'moi').trim(),
     publicUrl: env.FORMULAIRE_PUBLIC_URL?.trim().replace(/\/+$/, '') || null,
     publicRateLimit: positiveNumber(env.FORMULAIRE_PUBLIC_RATE_LIMIT, 20),
+    ollama: {
+      url: env.OLLAMA_URL?.trim().replace(/\/+$/, '') || 'http://127.0.0.1:11434',
+      model: env.OLLAMA_MODEL?.trim() || 'llama3.1:8b',
+      timeoutMs: positiveNumber(env.OLLAMA_TIMEOUT_MS, 300_000),
+    },
     logLevel: env.LOG_LEVEL || 'info',
   }
 }

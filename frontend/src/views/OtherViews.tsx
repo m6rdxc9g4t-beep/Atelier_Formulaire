@@ -1,8 +1,9 @@
 // Liste des formulaires, formulaires supprimés, aperçu, réponse (connectés) et réponse par lien public.
 
-import { ArrowLeft, ClipboardList, Plus, RotateCcw, Trash2 } from 'lucide-react'
-import { useEffect } from 'react'
+import { ArrowLeft, ClipboardList, Plus, RotateCcw, Sparkles, Trash2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
+import { AiDraftDialog } from '../components/AiDraftDialog.tsx'
 import { FillForm } from '../components/FillForm.tsx'
 import { FormActionsMenu } from '../components/FormActions.tsx'
 import { ErrorNotice, Skeleton, useUi } from '../components/ui.tsx'
@@ -16,6 +17,7 @@ export function HomeView() {
   const version = useTopic('forms')
   const forms = useAsync(() => api.forms(), [version])
   const { prompt, toast } = useUi()
+  const [aiOpen, setAiOpen] = useState(false)
 
   useEffect(() => {
     document.title = 'Atelier Formulaire'
@@ -55,18 +57,29 @@ export function HomeView() {
               : `${plural(list.length, 'formulaire', 'formulaires')}, ${plural(open, 'ouvert', 'ouverts')} aux réponses, ${plural(responses, 'réponse reçue', 'réponses reçues')}.`}
           </p>
         </div>
-        <button type="button" className="btn btn--primary" onClick={() => void create()}>
-          <Plus aria-hidden /> Nouveau formulaire
-        </button>
+        <div className="list-head__actions">
+          <button type="button" className="btn" onClick={() => setAiOpen(true)}>
+            <Sparkles aria-hidden /> Créer avec l’IA
+          </button>
+          <button type="button" className="btn btn--primary" onClick={() => void create()}>
+            <Plus aria-hidden /> Nouveau formulaire
+          </button>
+        </div>
       </div>
+      {aiOpen && <AiDraftDialog onClose={() => setAiOpen(false)} />}
 
       {list.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
           <ClipboardList aria-hidden width={36} height={36} style={{ color: 'var(--accent-ink)' }} />
           <p style={{ margin: '0.8rem 0 1.2rem' }}>Crée un questionnaire, ouvre-le aux réponses et partage son lien : les réponses arrivent ici, rangées.</p>
-          <button type="button" className="btn btn--primary" onClick={() => void create()}>
-            <Plus aria-hidden /> Créer le premier formulaire
-          </button>
+          <div className="list-head__actions" style={{ justifyContent: 'center' }}>
+            <button type="button" className="btn btn--primary" onClick={() => void create()}>
+              <Plus aria-hidden /> Créer le premier formulaire
+            </button>
+            <button type="button" className="btn" onClick={() => setAiOpen(true)}>
+              <Sparkles aria-hidden /> Créer avec l’IA
+            </button>
+          </div>
         </div>
       ) : (
         <ul className="form-rows">

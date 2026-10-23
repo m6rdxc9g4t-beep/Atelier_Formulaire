@@ -8,9 +8,11 @@ import type { FormsConfig } from './config.js'
 import { openDatabase, type Db } from './db/database.js'
 import { ApiError } from './http/errors.js'
 import { isAllowedHost, isAllowedOrigin, isWrite, requestUser } from './http/guards.js'
+import { aiRoutes } from './routes/ai.js'
 import { atelierRoutes } from './routes/atelier.js'
 import { fillRoutes } from './routes/fill.js'
 import { formRoutes } from './routes/forms.js'
+import { OllamaClient, type FetchLike } from './services/ai.js'
 import { pruneEvents } from './services/events.js'
 import { purgeDeletedForms } from './services/forms.js'
 import { pruneIdempotency } from './services/idempotency.js'
@@ -20,6 +22,8 @@ declare module 'fastify' {
   interface FastifyInstance {
     db: Db
     config: FormsConfig
+    /** Client Ollama de la création assistée. */
+    ai: OllamaClient
   }
   interface FastifyRequest {
     /** Auteur de la requête (portail de la suite, sinon auteur par défaut). */
@@ -48,9 +52,11 @@ export interface BuildOptions {
   db?: Db
   seed?: boolean
   logger?: boolean
+  /** Transport vers Ollama (tests : faux serveur). */
+  aiFetch?: FetchLike
 }
 
-export async function buildApp({ config, db, seed = true, logger = false }: BuildOptions): Promise<FastifyInstance> {
+export async function buildApp({ config, db, seed = true, logger = false, aiFetch }: BuildOptions): Promise<FastifyInstance> {
   const app = Fastify({
     logger: logger ? { level: config.logLevel } : false,
     bodyLimit: 1024 * 1024,
@@ -61,6 +67,7 @@ export async function buildApp({ config, db, seed = true, logger = false }: Buil
   const database = db ?? openDatabase(join(config.dataDir, 'formulaire.db'))
   app.decorate('db', database)
   app.decorate('config', config)
+  app.decorate('ai', new OllamaClient(config.ollama, aiFetch))
   app.decorateRequest('user', '')
   if (seed) seedIfEmpty(database)
 
@@ -100,6 +107,7 @@ export async function buildApp({ config, db, seed = true, logger = false }: Buil
   await app.register(formRoutes)
   await app.register(fillRoutes)
   await app.register(atelierRoutes)
+  await app.register(aiRoutes)
 
   if (config.staticDir) {
     const staticDir = config.staticDir

@@ -57,6 +57,26 @@ export type QuestionSummary =
   | { id: string; type: string; label: string; answered: number; kind: 'numbers'; min: number | null; max: number | null; average: number | null; distribution?: { value: number; count: number }[] }
   | { id: string; type: string; label: string; answered: number; kind: 'texts'; latest: string[] }
 
+/** État de l'IA locale (GET /api/ai/status). */
+export interface AiStatus {
+  available: boolean
+  model: string
+  modelInstalled: boolean
+}
+
+/** Brouillon proposé par l'IA : même forme que la création d'un formulaire. */
+export interface FormDraft {
+  title: string
+  description: string
+  questions: Question[]
+}
+
+export interface FormDraftResult {
+  draft: FormDraft
+  warnings: string[]
+  model: string
+}
+
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -68,20 +88,23 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(method: string, url: string, body?: unknown): Promise<T> {
+async function request<T>(method: string, url: string, body?: unknown, signal?: AbortSignal): Promise<T> {
   let response: Response
+  let text: string
   try {
     response = await fetch(url, {
       method,
       headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
       body: body !== undefined ? JSON.stringify(body) : undefined,
       credentials: 'same-origin',
+      signal,
     })
+    text = response.status === 204 ? '' : await response.text()
   } catch {
+    if (signal?.aborted) throw new ApiError(0, 'ABORTED', 'Demande annulée.')
     throw new ApiError(0, 'NETWORK', 'Le serveur ne répond pas. Vérifie ta connexion, puis réessaie.')
   }
   if (response.status === 204) return undefined as T
-  const text = await response.text()
   let data: unknown = null
   try {
     data = text ? JSON.parse(text) : null
@@ -112,6 +135,11 @@ export const api = {
   deleteForm: (id: number) => request<void>('DELETE', `/api/forms/${id}`),
   restoreForm: (id: number) => request<Form>('POST', `/api/forms/${id}/restore`),
   purgeForm: (id: number) => request<void>('DELETE', `/api/forms/${id}/purge`),
+
+  aiStatus: () => request<AiStatus>('GET', '/api/ai/status'),
+  /** Brouillon de formulaire (rien n'est créé) ; `signal` permet d'annuler une génération longue. */
+  formDraft: (input: { description: string; questionCount?: number }, signal?: AbortSignal) =>
+    request<FormDraftResult>('POST', '/api/ai/form-draft', input, signal),
 
   responses: (id: number, offset = 0, limit = 100) => request<{ total: number; items: FormResponse[] }>('GET', `/api/forms/${id}/responses?limit=${limit}&offset=${offset}`),
   summary: (id: number) => request<{ total: number; questions: QuestionSummary[] }>('GET', `/api/forms/${id}/summary`),
