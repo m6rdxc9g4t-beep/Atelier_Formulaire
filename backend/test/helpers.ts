@@ -7,6 +7,7 @@ import { join } from 'node:path'
 import { buildApp } from '../src/app.js'
 import { loadConfig, type FormsConfig } from '../src/config.js'
 import { openDatabase } from '../src/db/database.js'
+import type { FetchLike } from '../src/services/ai.js'
 
 export function testConfig(overrides: Partial<FormsConfig> = {}): FormsConfig {
   return {
@@ -18,9 +19,11 @@ export function testConfig(overrides: Partial<FormsConfig> = {}): FormsConfig {
   }
 }
 
-export async function testApp(options: { seed?: boolean; config?: Partial<FormsConfig> } = {}) {
+export async function testApp(options: { seed?: boolean; config?: Partial<FormsConfig>; aiFetch?: FetchLike } = {}) {
   const db = openDatabase(':memory:')
-  const app = await buildApp({ config: testConfig(options.config), db, seed: options.seed ?? false })
+  // Jamais de réseau réel : sans faux Ollama fourni, tout appel à l'IA échoue comme un serveur injoignable.
+  const aiFetch: FetchLike = options.aiFetch ?? (() => Promise.reject(new TypeError('fetch failed')))
+  const app = await buildApp({ config: testConfig(options.config), db, seed: options.seed ?? false, aiFetch })
   return { app, db }
 }
 
