@@ -1,9 +1,10 @@
 // Un formulaire : en-tête (statut, enregistrement, aperçu, ouverture) et ses trois onglets.
 
-import { ArrowLeft, Eye, Lock, Play, RotateCcw } from 'lucide-react'
-import { useEffect } from 'react'
+import { Eye, Lock, Play, RotateCcw } from 'lucide-react'
+import { useEffect, type ReactNode } from 'react'
 
 import { FormActionsMenu } from '../components/FormActions.tsx'
+import { TopBar } from '../components/Header.tsx'
 import { ErrorNotice, Skeleton, useUi } from '../components/ui.tsx'
 import { api, ApiError, type Form, type FormStatus } from '../lib/api.ts'
 import { invalidate, useAsync, useTopic } from '../lib/data.ts'
@@ -32,12 +33,20 @@ const SAVE_TEXT: Record<SaveState, string> = {
   conflict: 'Modifié ailleurs',
 }
 
+const PARENT = { href: '/', label: 'Formulaires', ariaLabel: 'Tous les formulaires' }
+
 export function FormPage({ id, tab }: { id: number; tab: FormTab }) {
   const version = useTopic('form')
   const loaded = useAsync(() => api.form(id), [id, version])
-  if (loaded.error) return <ErrorNotice error={loaded.error} onRetry={loaded.reload} />
-  if (!loaded.data || loaded.data.id !== id) return <Skeleton />
-  if (loaded.data.deletedAt) return <ErrorNotice error={new Error('Ce formulaire a été supprimé : restaure-le depuis « Formulaires supprimés ».')} />
+  const waiting = (body: ReactNode) => (
+    <>
+      <TopBar title="Formulaire" parent={PARENT} />
+      <div className="page">{body}</div>
+    </>
+  )
+  if (loaded.error) return waiting(<ErrorNotice error={loaded.error} onRetry={loaded.reload} />)
+  if (!loaded.data || loaded.data.id !== id) return waiting(<Skeleton />)
+  if (loaded.data.deletedAt) return waiting(<ErrorNotice error={new Error('Ce formulaire a été supprimé : restaure-le depuis « Formulaires supprimés ».')} />)
   return <FormEditorPage key={id} initial={loaded.data} tab={tab} />
 }
 
@@ -72,38 +81,50 @@ function FormEditorPage({ initial, tab }: { initial: Form; tab: FormTab }) {
 
   return (
     <div>
-      <div className="column">
-        <a className="back-link" href="/" onClick={(e) => onLinkClick(e, '/')}>
-          <ArrowLeft aria-hidden /> Tous les formulaires
+      <TopBar
+        title={draft.title || 'Formulaire sans titre'}
+        parent={PARENT}
+        meta={
+          <>
+            <StatusPill form={form} />
+            <span className="save-state" data-state={state === 'error' || state === 'conflict' ? 'error' : undefined} role="status" title={error ?? undefined}>
+              {SAVE_TEXT[state]}
+            </span>
+          </>
+        }
+      >
+        <a className="btn" href={`${base}/apercu`} onClick={(e) => onLinkClick(e, `${base}/apercu`)} title="Voir le formulaire comme la personne qui répond">
+          <Eye aria-hidden /> Aperçu
         </a>
-        <div className="form-head">
-          <h1 className="form-head__title">{draft.title || 'Formulaire sans titre'}</h1>
-          <StatusPill form={form} />
-          <span className="save-state" data-state={state === 'error' || state === 'conflict' ? 'error' : undefined} role="status" title={error ?? undefined}>
-            {SAVE_TEXT[state]}
-          </span>
-          <a className="btn" href={`${base}/apercu`} onClick={(e) => onLinkClick(e, `${base}/apercu`)} title="Voir le formulaire comme la personne qui répond">
-            <Eye aria-hidden /> Aperçu
-          </a>
-          {form.status === 'open' && form.accepting ? (
-            <button type="button" className="btn" onClick={() => setStatus('closed')}>
-              <Lock aria-hidden /> Fermer
-            </button>
-          ) : (
-            <button type="button" className="btn btn--primary" onClick={() => setStatus('open')}>
-              {form.status === 'draft' ? <Play aria-hidden /> : <RotateCcw aria-hidden />} {form.status === 'draft' ? 'Ouvrir aux réponses' : 'Rouvrir'}
-            </button>
-          )}
-          <FormActionsMenu
-            form={{ ...form, title: draft.title || form.title }}
-            context="page"
-            beforeDelete={editor.save}
-            onDeleted={() => navigate('/', { replace: true })}
-          />
-        </div>
+        {form.status === 'open' && form.accepting ? (
+          <button type="button" className="btn" onClick={() => setStatus('closed')}>
+            <Lock aria-hidden /> Fermer
+          </button>
+        ) : (
+          <button type="button" className="btn btn--primary" onClick={() => setStatus('open')}>
+            {form.status === 'draft' ? <Play aria-hidden /> : <RotateCcw aria-hidden />} {form.status === 'draft' ? 'Ouvrir aux réponses' : 'Rouvrir'}
+          </button>
+        )}
+        <FormActionsMenu
+          form={{ ...form, title: draft.title || form.title }}
+          context="page"
+          beforeDelete={editor.save}
+          onDeleted={() => navigate('/', { replace: true })}
+        />
+      </TopBar>
 
-        {(state === 'conflict' || state === 'error') && (
-          <div className="notice notice--danger" role="alert" style={{ marginTop: '0.8rem' }}>
+      <nav className="tabs" aria-label="Sections du formulaire">
+        {tabs.map((t) => (
+          <a key={t.id} href={t.href} aria-current={tab === t.id ? 'page' : undefined} onClick={(e) => onLinkClick(e, t.href)}>
+            {t.label}
+            {t.count !== undefined && t.count > 0 && <span className="count">{t.count}</span>}
+          </a>
+        ))}
+      </nav>
+
+      {(state === 'conflict' || state === 'error') && (
+        <div className="page page--flush">
+          <div className="notice notice--danger column" role="alert">
             <div style={{ flex: 1 }}>{error}</div>
             {state === 'conflict' ? (
               <button type="button" className="btn btn--sm" onClick={() => void editor.reload()}>
@@ -115,21 +136,14 @@ function FormEditorPage({ initial, tab }: { initial: Form; tab: FormTab }) {
               </button>
             )}
           </div>
-        )}
+        </div>
+      )}
 
-        <nav className="tabs" aria-label="Sections du formulaire">
-          {tabs.map((t) => (
-            <a key={t.id} href={t.href} aria-current={tab === t.id ? 'page' : undefined} onClick={(e) => onLinkClick(e, t.href)}>
-              {t.label}
-              {t.count !== undefined && t.count > 0 && <span className="count">{t.count}</span>}
-            </a>
-          ))}
-        </nav>
+      <div className="page">
+        {tab === 'questions' && <Builder editor={editor} />}
+        {tab === 'reponses' && <ResponsesTab form={form} questions={draft.questions} />}
+        {tab === 'partage' && <ShareTab editor={editor} />}
       </div>
-
-      {tab === 'questions' && <Builder editor={editor} />}
-      {tab === 'reponses' && <ResponsesTab form={form} questions={draft.questions} />}
-      {tab === 'partage' && <ShareTab editor={editor} />}
     </div>
   )
 }

@@ -20,8 +20,8 @@ export function ResponsesTab({ form, questions }: { form: Form; questions: Quest
   const total = summary.data?.total ?? form.responseCount
 
   return (
-    <div className="column">
-      <div className="toolbar" style={{ justifyContent: 'space-between', marginBottom: '1.4rem' }}>
+    <div className={view === 'table' ? 'column column--wide' : 'column'}>
+      <div className="toolbar toolbar--split">
         <div className="segmented" role="group" aria-label="Affichage des réponses">
           <button type="button" aria-pressed={view === 'summary'} onClick={() => setView('summary')}>
             Synthèse
@@ -44,9 +44,9 @@ export function ResponsesTab({ form, questions }: { form: Form; questions: Quest
       {!summary.data ? (
         <Skeleton />
       ) : total === 0 ? (
-        <div className="card">
-          <p style={{ margin: 0 }}>Aucune réponse pour l’instant.</p>
-          <p className="muted" style={{ margin: '0.4rem 0 0', fontSize: 14 }}>
+        <div className="empty">
+          <p className="empty__title">Aucune réponse pour l’instant.</p>
+          <p className="empty__text">
             {form.accepting ? 'Partage le lien du formulaire (onglet « Partage et réglages ») : les réponses apparaîtront ici.' : 'Ouvre le formulaire aux réponses, puis partage son lien.'}
           </p>
         </div>
@@ -69,7 +69,7 @@ function Summary({ total, items, lastAt }: { total: number; items: QuestionSumma
         </div>
         {lastAt && (
           <div className="stat">
-            <strong style={{ fontSize: '1.3rem', paddingTop: '0.5rem' }}>{timeAgo(lastAt)}</strong>
+            <strong className="stat__when">{timeAgo(lastAt)}</strong>
             <span>dernière réponse</span>
           </div>
         )}
@@ -116,7 +116,7 @@ function Summary({ total, items, lastAt }: { total: number; items: QuestionSumma
                   </div>
                 </div>
                 {q.distribution && (
-                  <ul className="bars" style={{ marginTop: '1rem' }}>
+                  <ul className="bars bars--spaced">
                     {q.distribution.map((d) => (
                       <li key={d.value} className="bar">
                         <span className="bar__label">{d.value}</span>
@@ -141,13 +141,13 @@ function Summary({ total, items, lastAt }: { total: number; items: QuestionSumma
                     ))}
                   </ul>
                   {q.answered > q.latest.length && (
-                    <p className="summary__meta" style={{ margin: '0.6rem 0 0' }}>
+                    <p className="summary__meta summary__meta--after">
                       Les {q.latest.length} plus récentes ; toutes dans « Une ligne par réponse ».
                     </p>
                   )}
                 </>
               ) : (
-                <p className="muted" style={{ margin: 0 }}>
+                <p className="muted summary__none">
                   Personne n’a répondu à cette question.
                 </p>
               ))}
@@ -246,8 +246,8 @@ function ResponsesTable({ form, questions, total, version }: { form: Form; quest
           </tbody>
         </table>
       </div>
-      <div className="toolbar" style={{ justifyContent: 'space-between', marginTop: '0.8rem' }}>
-        <span className="muted" style={{ fontSize: 13 }}>
+      <div className="toolbar toolbar--split toolbar--after">
+        <span className="muted">
           {items.length} sur {total} réponse{total > 1 ? 's' : ''}
         </span>
         {items.length < total && (

@@ -294,10 +294,10 @@ export function FillForm({ view, mode, onSubmit, banner, footer }: FillFormProps
       <>
         {banner}
         <div className="fill">
-          <div className="card fill__done" role="status">
+          <div className="fill__done" role="status">
             <CircleCheck aria-hidden />
             <h1>{mode === 'preview' ? 'Aperçu : la réponse n’a pas été envoyée' : 'Réponse envoyée'}</h1>
-            <p className="muted" style={{ whiteSpace: 'pre-line' }}>
+            <p className="fill__done-text">
               {view.confirmation || 'Merci, ta réponse est enregistrée.'}
             </p>
             {!(view.alreadyAnswered || mode === 'suite') && (
@@ -328,7 +328,7 @@ export function FillForm({ view, mode, onSubmit, banner, footer }: FillFormProps
         <span style={{ width: `${progress}%` }} />
       </div>
       <div className="fill">
-        <header className="card card--intro fill__head">
+        <header className="fill__head">
           <h1>{view.title}</h1>
           {view.description && <p className="fill__desc">{view.description}</p>}
           {hasRequired && !blocked && (
@@ -339,7 +339,7 @@ export function FillForm({ view, mode, onSubmit, banner, footer }: FillFormProps
         </header>
 
         {blocked ? (
-          <div className="notice" style={{ marginTop: '1.2rem' }}>
+          <div className="notice fill__closed">
             <Lock aria-hidden />
             <div>{closedMessage}</div>
           </div>
@@ -365,16 +365,16 @@ export function FillForm({ view, mode, onSubmit, banner, footer }: FillFormProps
               ))}
             </div>
             {formError && (
-              <div className="notice notice--danger" role="alert" style={{ marginTop: '1rem' }}>
+              <div className="notice notice--danger fill__error" role="alert">
                 <CircleAlert aria-hidden />
                 <div>{formError}</div>
               </div>
             )}
             <div className="fill__submit">
-              <button type="submit" className="btn btn--primary" disabled={sending}>
+              <button type="submit" className="btn btn--primary btn--lg" disabled={sending}>
                 {sending ? 'Envoi…' : mode === 'preview' ? 'Envoyer (aperçu)' : 'Envoyer ma réponse'}
               </button>
-              <span className="muted" style={{ fontSize: 13 }}>
+              <span className="fill__count">
                 Questions remplies : {answered} sur {questions.length}
               </span>
             </div>

@@ -78,7 +78,7 @@ backend/   Fastify + TypeScript + SQLite (better-sqlite3)
 frontend/  React + TypeScript + Vite, CSS natif
 ```
 
-Charte « néon monochrome » de la suite, couleur signature **menthe `#38D9A9`** (`frontend/src/styles/formulaire-signature.css`).
+Charte v2 « Linear » de la suite (structure neutre gris froid, clair et sombre, police Inter embarquée), couleur signature **sarcelle `#008478`** et icône Lucide `clipboard-list` (déclarées dans la marque commune `frontend/src/styles/atelier-brand/`).
 
 ## Vérifier
 

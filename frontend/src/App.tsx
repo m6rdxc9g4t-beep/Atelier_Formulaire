@@ -1,7 +1,7 @@
 // Coquille de l'application. La page de réponse par lien public est rendue seule : ni en-tête de la suite,
 // ni requête qui demanderait une session (la personne qui répond n'a pas de compte).
 
-import { Header } from './components/Header.tsx'
+import { Sidebar, TopBar } from './components/Header.tsx'
 import { AppProvider, useApp } from './components/AppContext.tsx'
 import { UiProvider } from './components/ui.tsx'
 import { useRoute, type Route } from './lib/router.ts'
@@ -18,9 +18,16 @@ function View({ route }: { route: Route }) {
       return <FormPage id={route.id} tab={route.tab} />
     default:
       return (
-        <div className="column card">
-          Cette adresse ne mène à aucun formulaire. <a href="/">Revenir à la liste</a>
-        </div>
+        <>
+          <TopBar title="Adresse inconnue" />
+          <div className="page">
+            <div className="empty">
+              <p>
+                Cette adresse ne mène à aucun formulaire. <a href="/">Revenir à la liste</a>
+              </p>
+            </div>
+          </div>
+        </>
       )
   }
 }
@@ -28,14 +35,13 @@ function View({ route }: { route: Route }) {
 function Shell() {
   const route = useRoute()
   const { user } = useApp()
-  const bare = route.name === 'preview' || route.name === 'fill'
   return (
     <div className="shell">
-      <a className="sr-only" href="#contenu">
+      <a className="sr-only skip-link" href="#contenu">
         Aller au contenu
       </a>
-      <Header user={user} />
-      <main id="contenu" className={bare ? undefined : 'main--wide'}>
+      <Sidebar user={user} route={route} />
+      <main id="contenu" className="main">
         {route.name === 'preview' ? <PreviewView id={route.id} /> : route.name === 'fill' ? <FillView id={route.id} /> : <View route={route} />}
       </main>
     </div>
@@ -47,7 +53,7 @@ export function App() {
   if (route.name === 'public') {
     return (
       <UiProvider>
-        <main id="contenu">
+        <main id="contenu" className="public">
           <PublicView token={route.token} />
         </main>
       </UiProvider>
