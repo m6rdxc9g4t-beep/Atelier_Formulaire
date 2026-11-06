@@ -213,10 +213,10 @@ export function AiDraftDialog({ onClose }: { onClose: () => void }) {
 
         {phase === 'result' && draft && result && (
           <section className="ai-preview" aria-label="Aperçu du brouillon">
-            <p className="ai-preview__eyebrow">
+            <h3 className="ai-preview__title">{draft.title}</h3>
+            <p className="ai-preview__meta-line">
               Aperçu · {plural(draft.questions.filter((q) => q.type !== 'section').length, 'question', 'questions')} · <span className="ai-preview__model">{result.model}</span>
             </p>
-            <h3 className="ai-preview__title">{draft.title}</h3>
             {draft.description && <p className="ai-preview__desc">{draft.description}</p>}
             {result.warnings.length > 0 && (
               <div className="notice notice--warning ai-preview__warnings">

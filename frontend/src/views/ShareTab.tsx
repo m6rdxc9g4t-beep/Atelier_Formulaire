@@ -129,12 +129,12 @@ export function ShareTab({ editor }: { editor: FormEditor }) {
           </label>
         </div>
 
-        <div style={{ marginTop: '1.2rem' }}>
+        <div className="settings__link">
           <span className="label">{form.access === 'public' ? 'Lien public à envoyer' : 'Lien à envoyer'}</span>
           {form.access === 'public' && publicLink ? (
             <>
               <CopyField value={publicLink} label="Lien public" />
-              <button type="button" className="btn btn--ghost btn--sm" style={{ marginTop: '0.5rem' }} onClick={() => void regenerate()} disabled={busy}>
+              <button type="button" className="btn btn--ghost btn--sm settings__regen" onClick={() => void regenerate()} disabled={busy}>
                 <RefreshCw aria-hidden /> Créer un nouveau lien (désactive l’actuel)
               </button>
             </>
@@ -171,7 +171,7 @@ export function ShareTab({ editor }: { editor: FormEditor }) {
             />
             Une seule réponse par personne
           </label>
-          <p className="hint" style={{ margin: '0.35rem 0 0' }}>
+          <p className="hint hint--after">
             {form.access === 'public' ? 'Impossible à vérifier avec un lien public (réponses anonymes).' : 'Selon le nom de la personne connectée.'}
           </p>
         </div>
@@ -179,7 +179,7 @@ export function ShareTab({ editor }: { editor: FormEditor }) {
           <label className="label" htmlFor="closes-at">
             Fermer automatiquement le
           </label>
-          <div style={{ display: 'flex', gap: '0.5rem', maxWidth: 380 }}>
+          <div className="date-row">
             <input
               id="closes-at"
               className="field"
@@ -194,7 +194,7 @@ export function ShareTab({ editor }: { editor: FormEditor }) {
             )}
           </div>
           {settings.closesAt && (
-            <p className="hint" style={{ margin: '0.35rem 0 0' }}>
+            <p className="hint hint--after">
               {new Date(settings.closesAt).getTime() <= Date.now() ? `Date passée : le formulaire n’accepte plus de réponses depuis le ${formatDate(settings.closesAt)}.` : `Plus aucune réponse après le ${formatDate(settings.closesAt)}.`}
             </p>
           )}
@@ -203,7 +203,7 @@ export function ShareTab({ editor }: { editor: FormEditor }) {
 
       <section className="card" aria-labelledby="data-title">
         <h2 id="data-title">Utiliser les réponses ailleurs</h2>
-        <p className="hint" style={{ marginBottom: 0 }}>
+        <p className="hint hint--last">
           Export CSV dans l’onglet Réponses. Atelier Nexus lit et envoie des réponses dans ses workflows (formulaire n° {form.id}) ; Atelier Viz peut lire les réponses comme un jeu de données
           (<code>/api/exports/datasets/form-{form.id}</code>).
         </p>
@@ -211,7 +211,7 @@ export function ShareTab({ editor }: { editor: FormEditor }) {
 
       <section className="card" aria-labelledby="danger-title">
         <h2 id="danger-title">Copie et suppression</h2>
-        <div className="toolbar" style={{ marginTop: '0.6rem' }}>
+        <div className="toolbar">
           <button type="button" className="btn" onClick={() => void duplicate()}>
             <CopyPlus aria-hidden /> Dupliquer (sans les réponses)
           </button>
