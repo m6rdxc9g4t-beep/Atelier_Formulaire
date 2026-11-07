@@ -78,7 +78,7 @@ backend/   Fastify + TypeScript + SQLite (better-sqlite3)
 frontend/  React + TypeScript + Vite, CSS natif
 ```
 
-Charte v2 « Linear » de la suite (structure neutre gris froid, clair et sombre, police Inter embarquée), couleur signature **sarcelle `#008478`** et icône Lucide `clipboard-list` (déclarées dans la marque commune `frontend/src/styles/atelier-brand/`).
+Charte v2 « Linear » de la suite (structure crème en clair, bleu nuit en sombre, police Inter embarquée ; chiffres clés en cartes arrondies de 12 px), couleur signature **sarcelle `#008478`** et icône Lucide `clipboard-list` (déclarées dans la marque commune `frontend/src/styles/atelier-brand/`).
 
 ## Vérifier
 

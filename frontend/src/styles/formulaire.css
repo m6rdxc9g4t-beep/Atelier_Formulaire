@@ -685,26 +685,47 @@
 .toolbar--after {
   margin: 12px 0 0;
 }
+/* Cartes de chiffres (comme .atelier-kpi de la marque commune) : plates, trait de 1 px, coins de 12 px. */
+.stats,
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 10px;
+}
 .stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 40px;
   margin-bottom: 20px;
+}
+/* Toujours trois chiffres (moyenne, minimum, maximum) : une rangée, même sur téléphone. */
+.numbers {
+  grid-template-columns: repeat(3, minmax(0, 11rem));
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--ds-radius-xl);
+  background: var(--app-surface);
+}
+.stat span {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--app-muted);
 }
 .stat strong {
   display: block;
   font-size: 20px;
   font-weight: 600;
   line-height: 1.2;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
 .stat strong.stat__when {
   font-size: 15px;
   line-height: 1.6;
-}
-.stat span {
-  font-size: 12px;
-  color: var(--app-muted);
+  letter-spacing: 0;
 }
 .summary {
   display: grid;
@@ -778,11 +799,6 @@
   border: 1px solid var(--app-line);
   white-space: pre-line;
   overflow-wrap: anywhere;
-}
-.numbers {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 32px;
 }
 
 .table-wrap {
