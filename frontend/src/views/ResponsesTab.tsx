@@ -64,13 +64,13 @@ function Summary({ total, items, lastAt }: { total: number; items: QuestionSumma
     <>
       <div className="stats">
         <div className="stat">
+          <span>{total > 1 ? 'Réponses' : 'Réponse'}</span>
           <strong>{fr(total)}</strong>
-          <span>{total > 1 ? 'réponses' : 'réponse'}</span>
         </div>
         {lastAt && (
           <div className="stat">
+            <span>Dernière réponse</span>
             <strong className="stat__when">{timeAgo(lastAt)}</strong>
-            <span>dernière réponse</span>
           </div>
         )}
       </div>
@@ -103,16 +103,16 @@ function Summary({ total, items, lastAt }: { total: number; items: QuestionSumma
               <>
                 <div className="numbers">
                   <div className="stat">
+                    <span>Moyenne</span>
                     <strong>{q.average === null ? '—' : fr(q.average)}</strong>
-                    <span>moyenne</span>
                   </div>
                   <div className="stat">
+                    <span>Minimum</span>
                     <strong>{q.min === null ? '—' : fr(q.min)}</strong>
-                    <span>minimum</span>
                   </div>
                   <div className="stat">
+                    <span>Maximum</span>
                     <strong>{q.max === null ? '—' : fr(q.max)}</strong>
-                    <span>maximum</span>
                   </div>
                 </div>
                 {q.distribution && (

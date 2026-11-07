@@ -1,9 +1,9 @@
 /* ==========================================================================
    Atelier Formulaire — bases de l'interface.
    Charte v2 « Linear » de la suite (Atelier_Deploy/DESIGN.md, docs/SUITE.md §1.7 d'Atelier Projets) :
-   structure neutre gris froid commune (jetons --atelier-* branchés sur --app-* par ui.css), la signature
+   structure commune crème en clair, bleu nuit en sombre (jetons --atelier-* branchés sur --app-* par ui.css), la signature
    sarcelle (#008478) ne sert qu'à l'accent : bouton principal, sélection, focus, liens, icône de l'app.
-   Plat au repos, traits de 1 px, Inter 13 px. Aucune couleur littérale, sauf le voile noir des dialogues et
+   Plat au repos, traits de 1 px, Inter 13 px. Aucune couleur littérale, sauf le voile bleu nuit des dialogues et
    la micro-ombre du segment pressé (valeurs de la charte, communes aux deux thèmes).
    ========================================================================== */
 
@@ -603,7 +603,7 @@ dialog.dialog {
   box-shadow: var(--shadow-pop);
 }
 dialog.dialog::backdrop {
-  background: rgb(10 11 13 / 0.45);
+  background: rgb(11 18 32 / 0.45); /* voile bleu nuit (#0b1220) */
 }
 .dialog__body {
   padding: 20px 20px 4px;
